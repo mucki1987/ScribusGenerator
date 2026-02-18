@@ -377,29 +377,29 @@ class ScribusGenerator:
                     if index_current == min(records_in_document, data_count):
                         logging.debug('Generating reference content from buffer at #%s' % index_current)
                         scribus_element= ET.fromstring(output)
-                        document_element = scribus_element.find('DOCUMENT')
-                        pages_count = int(document_element.get('ANZPAGES'))
-                        page_height = float(document_element.get('PAGEHEIGHT'))
+                        document_element = scribus_element.find('Document')
+                        pages_count = int(document_element.get('PageCount'))
+                        page_height = float(document_element.get('PageHeight'))
                         vertical_gap = float(document_element.get('GapVertical'))
-                        groups_count = int(document_element.get('GROUPC'))
-                        objects_count = len(scribus_element.findall('.//PAGEOBJECT'))
+                        groups_count = int(document_element.get('GroupCounter'))
+                        objects_count = len(scribus_element.findall('.//PageObject'))
                         version = str(scribus_element.get('Version')) #str(document_element.get('DOCDATE'))
 
                         logging.debug('Current template has #%s page objects' % objects_count)
 
-                        document_element.set('ANZPAGES',
+                        document_element.set('PageCount',
                             str(math.ceil(pages_count * data_count // records_in_document))
                         )
 
-                        document_element.set('DOCCONTRIB',
-                            document_element.get('DOCCONTRIB') + CONST.CONTRIB_TEXT
+                        document_element.set('DocumentInfoContributors',
+                            document_element.get('DocumentInfoContributors') + CONST.CONTRIB_TEXT
                         )
 
                     # Append DOCUMENT content
                     logging.debug('Merging content from buffer up to entry index_current #%s' % index_current)
 
                     shifted_elements = self.shift_pages_and_objects(
-                        ET.fromstring(output).find('DOCUMENT'),
+                        ET.fromstring(output).find('Document'),
                         pages_count,
                         page_height,
                         vertical_gap,
